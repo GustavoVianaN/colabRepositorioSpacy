@@ -23,7 +23,7 @@ def criacaoFuncao(numerosite):
 @Language.component("set")
 def set(doc):
     for token in doc[:-1]:
-        if token.text == "," or token.text == "...":
+        if token.text == "," or token.text == "..." or token.text == "?" or token.text == "!":
             doc[token.i + 1].is_sent_start = True
     return doc
 criacaoFuncao(0)
