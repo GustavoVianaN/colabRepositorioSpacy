@@ -1,0 +1,29 @@
+from spacy.language import Language
+import spacy
+from bs4 import BeautifulSoup
+
+!wget 'https://en.wikipedia.org/wiki/Natural_language_processing' -O site1.html
+!wget 'https://www.datarobot.com/blog/what-is-natural-language-processing-introduction-to-nlp/' -O site2.html
+!wget 'https://hbr.org/2022/04/the-power-of-natural-language-processing' -O site3.html
+!wget 'https://www.investopedia.com/terms/n/natural-language-processing-nlp.asp' -O site4.html
+!wget 'https://www.techtarget.com/searchenterpriseai/definition/natural-language-processing-NLP' -O site5.html
+
+def criacaoFuncao(numerosite):
+  while numerosite < 5:
+    numerosite = numerosite + 1
+    text = "".join([a.get_text() for a in BeautifulSoup(open("./site{}.html".format(numerosite), 'r'.format(numerosite)), 'html.parser').find_all('p')])
+    nlp = spacy.load("en_core_web_sm")
+    nlp.add_pipe("set", before="parser")
+    doc = nlp(text)
+    array2 = [sent.text for sent in nlp(text).sents]
+    array2 = len(array2)
+    print("array de sentenças :", [sent.text for sent in doc.sents])
+    print(len(text), " palavras - ", array2, " sentenças no array de sentenças \n")  
+
+@Language.component("set")
+def set(doc):
+    for token in doc[:-1]:
+        if token.text == "," or token.text == "...":
+            doc[token.i + 1].is_sent_start = True
+    return doc
+criacaoFuncao(0)
